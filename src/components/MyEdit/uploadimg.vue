@@ -9,8 +9,8 @@
 		</div>
 		<div v-else class="addimg">
 		    <label for="upImg" class="chooseImg">
-		       <p style="font-size: 24px">+</p>
-		       <p>点击上传</p>
+		       <p style="font-size:24px">+</p>
+		       <p style="font-size:12px">点击上传</p>
 		   </label>
 		</div>
 	</div>
@@ -67,13 +67,12 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 .upimg{
 	.showimg{
 		width: 70px;
 		height: 70px;
 		margin: auto;
-		cursor: pointer;
 		position: relative;
 		font-family: PingFangSC-Regular;
 		color: #B8B8B8;
@@ -84,6 +83,7 @@ export default {
 			position: absolute;
 			left: 80px;
 			bottom: -5px;
+			cursor: pointer;
 			text-decoration: underline;
 			line-height: 15px;
 			&:hover{
@@ -97,11 +97,16 @@ export default {
 		margin: auto;
 		text-align: center;
 		border: 1px solid #C2C2C2;
-		cursor: pointer;
 		position: relative;
 		font-family: PingFangSC-Regular;
 		color: #B8B8B8;
 		letter-spacing: 0;
+		.chooseImg{
+			width: 70px;
+			height: 70px;
+			line-height: 50%;
+			cursor: pointer;
+		}
 		&:after{
 			content: "图片格式：大小 70*70px ，小于500K；png, jpg格式。";
 			width: 300px;

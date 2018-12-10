@@ -1,39 +1,48 @@
 <template>
-    <div class="editor" v-focus >
-        <div class="textarea" ref="editor" @blur="getblur()" @focus="getfocus()" @click="editorstatus=false" contenteditable="true"></div>
-        <div class="utils" ref="utils" v-show="utilsshow" @mousedown.stop="setclass($event)"  >
-            <i class="bold" @mousedown="choseeditor('bold')"></i>
-            <i class="italic" @mousedown="choseeditor('Italic')"></i>
-            <i class="color"@mousedown.self="chosecolor()"><span class="sanj"></span>
-                <div class="colorbox" v-show="colorstatus">
-                    <div class="auto">自动</div>
-                    <p>主题颜色</p>
-                    <ul class="themecolor" @mousedown.stop="setcolor($event)">
-                        <li v-for="it in themecolor" :style="'backgroundColor:'+it"></li>
-                    </ul>
-                    <p>标准颜色</p>
-                    <ul class="staticcolor" @mousedown.stop="setcolor($event)">
-                        <li v-for="it in staticcolor" :style="'backgroundColor:'+it"></li>
-                    </ul>
-                    <a href="#">其他颜色</a>
-                </div>
-            </i>
-            <i class="link" @mousedown="choselink('CreateLink','http://www.51js.com')">
-            </i>
+    <div>
+        <div class="editor" v-focus >
+            <div class="textarea" ref="editor" @blur="getblur()" @focus="getfocus()" @click="editorstatus=false" contenteditable="true"></div>
+            <div class="utils" ref="utils" v-show="utilsshow" @mousedown.stop="setclass($event)"  >
+                <i class="bold" @mousedown="choseeditor('bold')"></i>
+                <i class="italic" @mousedown="choseeditor('Italic')"></i>
+                <i class="color"@mousedown.self="chosecolor()"><span class="sanj"></span>
+                    <div class="colorbox" v-show="colorstatus">
+                        <div class="auto">自动</div>
+                        <p>主题颜色</p>
+                        <ul class="themecolor" @mousedown.stop="setcolor($event)">
+                            <li v-for="it in themecolor" :style="'backgroundColor:'+it"></li>
+                        </ul>
+                        <p>标准颜色</p>
+                        <ul class="staticcolor" @mousedown.stop="setcolor($event)">
+                            <li v-for="it in staticcolor" :style="'backgroundColor:'+it"></li>
+                        </ul>
+                        <a href="#">其他颜色</a>
+                    </div>
+                </i>
+                <i class="link" @mousedown="choselink('CreateLink','http://www.51js.com')">
+                </i>
+            </div>
+            <div class="linktool" v-show="linkeditor||linkreset" ref="linkeditor">
+                 <div class="inner" contenteditable v-html="httplink" @input="innerCont=$event.target.innerHTML">
+                 </div>
+                 <i class="right" :class="{'edit':linkreset}" @mousedown="httplink=innerCont;setlink()"></i>
+                 <i class="wrong" :class="{'reset':linkreset}" @click="choseeditor('undo');linkeditor=false;linkreset=false"></i>
+            </div>
         </div>
-        <div class="linktool" v-show="linkeditor" ref="linkeditor">
-             <div class="inner" contenteditable v-html="httplink" @input="innerCont=$event.target.innerHTML">
-             </div>
-             <i class="right" @mousedown="httplink=innerCont;setlink()"></i>
-             <i class="wrong" @click="choseeditor('undo');linkeditor=false"></i>
+        <div class="uploadimg">
+            <uploadimg></uploadimg>    
         </div>
-        
     </div>
 </template>
 
 <script>
+import uploadimg from "./uploadimg"
+
 export default {
   name: 'MyEdit',
+  components:{
+    uploadimg
+  },
   data () {
     return {
         utilsshow:false,
@@ -59,6 +68,7 @@ export default {
         ],
         editstatus:false,
         linkeditor:false,
+        linkreset:false,
         colorstatus:false,
         lastclass:'',
         httplink:'https://',
@@ -122,6 +132,14 @@ export default {
         select.setAttribute("href",this.httplink);
         this.removeClass(select,'selected')
         this.linkeditor=false;
+        this.linkreset=false;
+        select.addEventListener('mouseenter', function(e) {
+            this.linkreset=true
+            this.addClass(select,'selected')
+        }.bind(this))
+        this.$refs.linkeditor.addEventListener('mouseleave', function(e) {
+            this.linkreset=false
+        }.bind(this))
     },
     setclass(e){
         this.$refs.editor.focus();
@@ -299,6 +317,12 @@ export default {
             }
             &.wrong{
                 @include link-icon("ic_wrong");
+            }
+            &.edit{
+                @include link-icon("ic_right_copy");
+            }
+            &.reset{
+                @include link-icon("ic_wrong_copy");
             }
         }
     }
